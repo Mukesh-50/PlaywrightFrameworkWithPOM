@@ -1,0 +1,30 @@
+[
+    {
+        "name": "John Doe",
+        "email": "john.doe",
+        "password": "Password@123",
+        "state": "Delhi",
+        "hobbies": ["Playing", "Reading"]
+    },
+    {
+        "name": "Sarah Smith",
+        "email": "sarah.smith",
+        "password": "SecurePass@456",
+        "state": "Goa",
+        "hobbies": ["Swimming", "Reading"]
+    },
+    {
+        "name": "Rajesh Kumar",
+        "email": "rajesh.kumar",
+        "password": "TestPass@789",
+        "state": "Punjab",
+        "hobbies": ["Playing", "Swimming"]
+    },
+    {
+        "name": "Priya Sharma",
+        "email": "priya.sharma",
+        "password": "MyPassword@101",
+        "state": "Karnataka",
+        "hobbies": ["Reading", "Playing", "Swimming"]
+    }
+]
