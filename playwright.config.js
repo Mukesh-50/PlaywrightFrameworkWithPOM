@@ -3,11 +3,6 @@ import { defineConfig, devices } from '@playwright/test';
 
 require('dotenv').config({ path: './config/.env', quiet: true });
 
-
-const envkey=process.env.ENV || 'QAENV'
-
-const baseurl=process.env[envkey]
-
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -19,6 +14,12 @@ const baseurl=process.env[envkey]
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
+
+const envkey=process.env.ENV || 'QAENV'
+
+const baseurl=process.env[envkey]
+
+
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
