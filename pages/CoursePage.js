@@ -62,7 +62,7 @@ export class CoursePage extends BasePage
         for(const day of days)
         {
             const text = await day.textContent()
-            if(text.trim() === "31")
+            if(text.trim() === "17")
             {
                 await day.click()
                 break

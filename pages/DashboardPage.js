@@ -45,7 +45,7 @@ export class DashboardPage extends BasePage
         await newTab.waitForLoadState("networkidle")
         //console.log("new tab title: " + await newTab.title())
        // console.log("new tab url: " + newTab.url())
-        //return new CategoryPage(newTab)
+        return new CategoryPage(newTab)
     }
 
 }

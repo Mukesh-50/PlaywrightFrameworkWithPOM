@@ -16,9 +16,10 @@ test.describe("Category Management Tests", () => {
         const categoryPage = await dashboardPage.navigateToManageCategories()
 
         // Step 3 - Click Add New Category → JS alert → type name → accept
+        console.log("Category name is "+categoryName);
+                
         await categoryPage.addCategory(categoryName)
 
-       
         // Step 4 - Verify category is created on the page
         await categoryPage.verifyCategoryVisible(categoryName)
 
