@@ -8,7 +8,7 @@ This is framework for web automation using playwright with JS with POM
 
 ## Run Locally
 
-Clone the project
+Clone the project and for private repo use credential
 
 ```bash
   git clone https://github.com/Mukesh-50/PlaywrightFrameworkWithPOM.git
