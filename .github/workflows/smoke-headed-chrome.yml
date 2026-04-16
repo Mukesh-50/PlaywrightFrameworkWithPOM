@@ -1,0 +1,82 @@
+name: Smoke Tests - Headed Chrome
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  smoke-headed-chrome:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium browser with dependencies
+        run: npx playwright install chromium --with-deps
+
+      - name: Install Xvfb (virtual display for headed mode)
+        run: sudo apt-get install -y xvfb
+
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --save-dev
+
+      - name: Create .env file from secrets
+        run: |
+          mkdir -p config
+          cat <<EOF > config/.env
+          QAENV=${{ secrets.QAENV_URL }}
+          STAG=${{ secrets.STAG_URL }}
+          EOF
+
+      - name: Run smoke:headedChrome tests
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" npm run smoke:headedChrome
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: reports/
+          retention-days: 14
+
+      - name: Upload Allure results (raw)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+          retention-days: 7
+
+      - name: Upload test failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
