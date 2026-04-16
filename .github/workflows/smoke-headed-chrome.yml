@@ -38,13 +38,13 @@ jobs:
       - name: Install Allure CLI
         run: npm install -g allure-commandline --save-dev
 
-      - name: Create .env file from secrets
+      - name: Create .env file
+        env:
+          QAENV_URL: ${{ secrets.QAENV_URL || 'https://freelance-learn-automation.vercel.app' }}
+          STAG_URL: ${{ secrets.STAG_URL || 'https://learn-automation.com' }}
         run: |
           mkdir -p config
-          cat <<EOF > config/.env
-          QAENV=${{ secrets.QAENV_URL }}
-          STAG=${{ secrets.STAG_URL }}
-          EOF
+          printf 'QAENV=%s\nSTAG=%s\n' "$QAENV_URL" "$STAG_URL" > config/.env
 
       - name: Run smoke:headedChrome tests
         run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" npm run smoke:headedChrome
