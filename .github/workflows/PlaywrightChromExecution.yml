@@ -1,0 +1,83 @@
+name: Smoke Tests - Headless Chrome
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  
+  smoke-headless-chrome:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium browser with dependencies
+        run: npx playwright install chromium --with-deps
+
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --save-dev
+
+      - name: Create .env file
+        env:
+          QAENV_URL: ${{ secrets.QAENV_URL || 'https://freelance-learn-automation.vercel.app' }}
+          STAG_URL: ${{ secrets.STAG_URL || 'https://learn-automation.com' }}
+        run: |
+          mkdir -p config
+          printf 'QAENV=%s\nSTAG=%s\n' "$QAENV_URL" "$STAG_URL" > config/.env
+      
+      - name: Run smoke:headlessChrome tests
+        run: npm run smoke:headlessChrome
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: reports/
+          retention-days: 14
+
+      - name: Upload Allure results (raw)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+          retention-days: 7
+
+      - name: Upload test failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
